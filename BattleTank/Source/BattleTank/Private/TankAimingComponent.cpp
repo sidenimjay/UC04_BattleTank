@@ -33,21 +33,29 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 	
 	FVector OutLaunchVelocity;
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
+	const FCollisionResponseParams rParam;
 	const TArray<AActor*> miss;
-	bool bHasAimSolution = UGameplayStatics::SuggestProjectileVelocity(this, OutLaunchVelocity, StartLocation, HitLocation,
-		LaunchSpeed, ESuggestProjVelocityTraceOption::DoNotTrace);
+	bool bHasAimSolution = UGameplayStatics::SuggestProjectileVelocity(this, 
+		OutLaunchVelocity,
+		StartLocation, 
+		HitLocation,
+		LaunchSpeed, 
+		false,
+		0.0f, 
+		0.0f, 
+		ESuggestProjVelocityTraceOption::DoNotTrace);
 	//Calculate Out Launch Velocity
 	if ( bHasAimSolution )
 	{
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		auto TankName = GetOwner()->GetName();
 		MoveBarrelTowards(AimDirection);
-		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f: Aim solution found"), Time);
+		//auto Time = GetWorld()->GetTimeSeconds();
+		//UE_LOG(LogTemp, Warning, TEXT("%f: Aim solution found"), Time);
 	}
 	else {
-		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f: No aim Solve Found"), Time);
+		//auto Time = GetWorld()->GetTimeSeconds();
+		//UE_LOG(LogTemp, Warning, TEXT("%f: No aim Solve Found"), Time);
 	}
 }
 
@@ -57,7 +65,7 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
-
-	Barrel->Elevate(5); //TODO remove magic number (5)
+	//UE_LOG(LogTemp, Warning, TEXT("DeltaRotator Pitch : %f "), DeltaRotator.Pitch);
+	Barrel->Elevate( DeltaRotator.Pitch ); //TODO remove magic number (5)
 }
 

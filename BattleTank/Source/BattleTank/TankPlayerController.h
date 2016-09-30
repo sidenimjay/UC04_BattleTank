@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "Public/Tank.h"
+//#include "Public/Tank.h"
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"  //must be last include!!
 
+class ATank;
 /**
  * 
  */
