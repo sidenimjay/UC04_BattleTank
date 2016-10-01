@@ -12,7 +12,7 @@ UTankAimingComponent::UTankAimingComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	bWantsBeginPlay = true;
-	PrimaryComponentTick.bCanEverTick = true;//TODO should this really tick?
+	PrimaryComponentTick.bCanEverTick = false;//TODO should this really tick?
 
 	// ...
 }
@@ -29,40 +29,29 @@ void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet)
 
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
-	/*auto OurTankName = GetOwner()->GetName();
-	auto BarrelLocation = Barrel->GetComponentLocation();
-	//tell controlled tank to aim at this point
-	UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s from %s"), *OurTankName, *HitLocation.ToString(), *BarrelLocation.ToString());
-	*/
 	if (!Barrel || !Turret) { return; }
 
-	
+
 	FVector OutLaunchVelocity;
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
 	const FCollisionResponseParams rParam;
 	const TArray<AActor*> miss;
-	bool bHasAimSolution = UGameplayStatics::SuggestProjectileVelocity(this, 
+	bool bHasAimSolution = UGameplayStatics::SuggestProjectileVelocity(this,
 		OutLaunchVelocity,
-		StartLocation, 
+		StartLocation,
 		HitLocation,
-		LaunchSpeed, 
+		LaunchSpeed,
 		false,
-		0.0f, 
-		0.0f, 
+		0.0f,
+		0.0f,
 		ESuggestProjVelocityTraceOption::DoNotTrace);
 	//Calculate Out Launch Velocity
-	if ( bHasAimSolution )
+	if (bHasAimSolution)
 	{
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		auto TankName = GetOwner()->GetName();
 		MoveBarrelTowards(AimDirection);
 		MoveTurretTowards(AimDirection);
-		//auto Time = GetWorld()->GetTimeSeconds();
-		//UE_LOG(LogTemp, Warning, TEXT("%f: Aim solution found"), Time);
-	}
-	else {
-		//auto Time = GetWorld()->GetTimeSeconds();
-		//UE_LOG(LogTemp, Warning, TEXT("%f: No aim Solve Found"), Time);
 	}
 }
 
