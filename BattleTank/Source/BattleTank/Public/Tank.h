@@ -9,6 +9,7 @@
 //Forward Declaration
 class UTankBarrel; 
 class UTankTurret;
+class AProjectile;
 class UTankAimingComponent;
 
 UCLASS()
@@ -45,6 +46,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = Firing)
 	float LaunchSpeed = 4000;
 
-
+	UPROPERTY(EditAnywhere, Category = Setup)
+	TSubclassOf<AProjectile> ProjectileBlueprint;
 	
+	UTankBarrel* Barrel = nullptr; //Local Barrel Ref for spawning projectile
 };
